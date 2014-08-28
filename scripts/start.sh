@@ -21,7 +21,7 @@ wait_for_postgres_and_run_post_start_action() {
   post_start_action
 
   if [ ! -z "$WALE_RUN_PUSH" ]; then
-    envdir /etc/wal-e.d/env wal-e backup-push $DATA_DIR
+    su - postgres -c "envdir /etc/wal-e.d/env wal-e backup-push $DATA_DIR"
   fi
 }
 
