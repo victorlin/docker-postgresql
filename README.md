@@ -141,3 +141,29 @@ PASS=<pass>`, then the linked container should have these variables available
 in its environment.  Since we aliased the database container with the name
 *db*, the environment variables from the database container are copied into the
 linked container with the prefix `DB_ENV_`.
+
+## Backup with WAL-E
+
+To enable [WAL-E](https://github.com/wal-e/wal-e) backup, you need to create the [envdir](https://github.com/wal-e/wal-e#id6) and
+mount it to `/etc/wal-e.d/env`. Then, you can modify `postgresql.conf`,
+add following lines:
+
+```
+wal_level = archive # hot_standby is also acceptable (will log more)
+archive_mode = on
+archive_command = 'envdir /etc/wal-e.d/env wal-e wal-push %p'
+archive_timeout = 60
+```
+
+or you can expose environment variable `APPEND_WAL_CONFIG` to be `1`, then
+these lines will be appended to the configuration file for you.
+
+To schedule WAL-E backup push routine, you can expose `WAL_PUSH_SCHEDULE` 
+variable to be in crontab format schedule. For example, `0 2 * * *` will
+run backup push at 2 AM every day. Likewise, to rotate backups with
+
+```
+wal-e delete --confirm retain 7
+```
+
+command, you can also expose `WAL_ROTATE_SCHEDULE` variable.
