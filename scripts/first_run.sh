@@ -55,9 +55,5 @@ EOF
     done
   fi
 
-  if [ ! -z "$WALE_FIRST_RUN_PUSH" ]; then
-    envdir /etc/wal-e.d/env wal-e backup-push $DATA_DIR
-  fi
-
   rm /firstrun
 }
