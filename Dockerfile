@@ -19,7 +19,10 @@ RUN echo "deb http://apt.postgresql.org/pub/repos/apt/ trusty-pgdg main" > /etc/
     /etc/init.d/postgresql stop
 
 # Install wal-e
-RUN apt-get install -y --force-yes python-pip python-dev libxml2-dev libxslt-dev zlib1g-dev lzop pv
+RUN apt-get install -y --force-yes \
+    python-pip python-dev \
+    libxml2-dev libxslt-dev \
+    zlib1g-dev lzop pv
 RUN pip install wal-e envdir
 RUN pip install "six>=1.7.0"
 ADD scripts/init_wale.py /etc/my_init.d/50_init_wale.py
