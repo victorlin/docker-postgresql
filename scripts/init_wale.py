@@ -8,7 +8,7 @@ CRONTAB_PATH = '/etc/cron.d/wal-e'
 
 
 def main():
-    if int(os.getenv('APPEND_WAL_CONFIG', False)):
+    if not int(os.getenv('APPEND_WAL_CONFIG', False)):
         print >>sys.stderr, 'Skip appending WAL config'
     else:
         with open(CONFIG_PATH, 'rt') as config_file:
