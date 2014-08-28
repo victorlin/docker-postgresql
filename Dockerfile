@@ -1,6 +1,6 @@
 # Postgresql (http://www.postgresql.org/)
 
-FROM phusion/baseimage:0.9.10
+FROM phusion/baseimage:0.9.13
 MAINTAINER Ryan Seto <ryanseto@yak.net>
 
 # Ensure we create the cluster with UTF-8 locale
@@ -17,6 +17,12 @@ RUN echo "deb http://apt.postgresql.org/pub/repos/apt/ trusty-pgdg main" > /etc/
     apt-get install -y --force-yes \
         postgresql-9.3 postgresql-client-9.3 postgresql-contrib-9.3 && \
     /etc/init.d/postgresql stop
+
+# Install wal-e
+RUN apt-get install -y --force-yes python-pip python-dev libxml2-dev libxslt-dev
+RUN pip install wal-e envdir
+ADD scripts/init_wale.py /etc/my_init.d/50_init_wale.py
+RUN chmod +x /etc/my_init.d/50_init_wale.py
 
 # Install other tools.
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y pwgen inotify-tools
@@ -40,7 +46,12 @@ RUN mkdir /etc/service/postgresql
 RUN ln -s /scripts/start.sh /etc/service/postgresql/run
 
 # Expose our data, log, and configuration directories.
-VOLUME ["/data", "/var/log/postgresql", "/etc/postgresql"]
+VOLUME [
+	"/data",
+	"/var/log/postgresql",
+	"/etc/postgresql",
+	"/etc/wal-e.d/env"
+]
 
 # Use baseimage-docker's init system.
 CMD ["/sbin/my_init"]
