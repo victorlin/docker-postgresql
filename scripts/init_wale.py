@@ -40,7 +40,7 @@ def main():
                 '{} postgres envdir /etc/wal-e.d/env wal-e backup-push /data'
                 .format(push_schedule)
             )
-        if push_schedule:
+        if rotate_schedule:
             lines.append(
                 '{} postgres envdir /etc/wal-e.d/env wal-e delete --confirm retain 7'
                 .format(rotate_schedule)
